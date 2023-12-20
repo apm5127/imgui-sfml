@@ -10,16 +10,16 @@
 int main() {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "ImGui + SFML = <3");
     window.setFramerateLimit(60);
-    ImGui::SFML::Init(window);
+    if (!ImGui::SFML::Init(window)) return -1;
 
     sf::RenderWindow childWindow(sf::VideoMode(640, 480), "ImGui-SFML Child window");
     childWindow.setFramerateLimit(60);
-    ImGui::SFML::Init(childWindow);
+    if (!ImGui::SFML::Init(childWindow)) return -1;
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
         // Main window event processing
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(window, event);
             if (event.type == sf::Event::Closed) {
@@ -84,6 +84,4 @@ int main() {
             childWindow.display();
         }
     }
-
-    return 0;
 }

@@ -1,6 +1,5 @@
 Ignore folders named build
-build/**
-Build/**
+[bB][uU][iI][lL][dD]/**
 
 Ignore Visual Studio folder
 .vs/**

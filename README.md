@@ -1,11 +1,5 @@
-ImGui-SFML v2.5
-=======
-
-[![Ubuntu](https://github.com/eliasdaler/imgui-sfml/actions/workflows/ubuntu.yml/badge.svg?branch=master)](https://github.com/eliasdaler/imgui-sfml/actions/workflows/ubuntu.yml)
-[![Windows MinGW](https://github.com/eliasdaler/imgui-sfml/actions/workflows/windows-mingw.yml/badge.svg?branch=master)](https://github.com/eliasdaler/imgui-sfml/actions/workflows/windows-mingw.yml)
-[![Windows Visual Studio](https://github.com/eliasdaler/imgui-sfml/actions/workflows/windows-msvc.yml/badge.svg?branch=master)](https://github.com/eliasdaler/imgui-sfml/actions/workflows/windows-msvc.yml)
-[![macOS](https://github.com/eliasdaler/imgui-sfml/actions/workflows/macos.yml/badge.svg?branch=master)](https://github.com/eliasdaler/imgui-sfml/actions/workflows/macos.yml)
-[![clang-format](https://github.com/eliasdaler/imgui-sfml/actions/workflows/clang-format.yml/badge.svg?branch=master)](https://github.com/eliasdaler/imgui-sfml/actions/workflows/clang-format.yml)
+ImGui-SFML
+==========
 
 Library which allows you to use [Dear ImGui](https://github.com/ocornut/imgui) with [SFML](https://github.com/SFML/SFML)
 
@@ -13,11 +7,17 @@ Library which allows you to use [Dear ImGui](https://github.com/ocornut/imgui) w
 
 Based on [this repository](https://github.com/Mischa-Alff/imgui-backends) with big improvements and changes.
 
+State of Development
+-----
+
+-   The [`master`](https://github.com/SFML/imgui-sfml/tree/master) branch contains work in progress supporting SFML 3. The SFML 3 API is not stable so this branch is not stable either.
+-   The [`2.6.x`](https://github.com/SFML/imgui-sfml/tree/2.6.x) branch contains work targeting SFML 2 and is thus stable.
+
 Dependencies
 -----
 
 * [SFML](https://github.com/SFML/SFML) >= 2.5.0
-* [Dear ImGui](https://github.com/ocornut/imgui) >= 1.80
+* [Dear ImGui](https://github.com/ocornut/imgui) >= 1.89
 
 Contributing
 -----
@@ -28,50 +28,36 @@ Contributing
 How-to
 ----
 
-- [**Detailed tutorial on my blog**](https://eliasdaler.github.io/using-imgui-with-sfml-pt1)
-- [**Using ImGui with modern C++ and STL**](https://eliasdaler.github.io/using-imgui-with-sfml-pt2/)
+- [**CMake tutorial which also shows how to use ImGui-SFML with FetchContent**](https://edw.is/using-cmake/)
+- [**Example project which sets up ImGui-SFML with FetchContent**](https://github.com/eliasdaler/cmake-fetchcontent-tutorial-code)
+- [**Detailed tutorial on Elias Daler's blog**](https://edw.is/using-imgui-with-sfml-pt1)
+- [**Using ImGui with modern C++ and STL**](https://edw.is/using-imgui-with-sfml-pt2/)
 - [**Thread on SFML forums**](https://en.sfml-dev.org/forums/index.php?topic=20137.0). Feel free to ask your questions there.
 
 Building and integrating into your CMake project
 ---
+It's highly recommended to use FetchContent or git submodules to get SFML and Dear ImGui into your build.
 
-- [**CMake tutorial on my blog**](https://eliasdaler.github.io/using-cmake/)
+See [this file](https://github.com/eliasdaler/imgui-sfml-fetchcontent/blob/master/dependencies/CMakeLists.txt) - if you do something similar, you can then just link to ImGui-SFML as simply as:
 
-```sh
-cmake <ImGui-SFML repo folder> -DIMGUI_DIR=<ImGui repo folder> -DSFML_DIR=<path with built SFML>
-```
-
-If you have SFML installed on your system, you don't need to set SFML_DIR during
-configuration.
-
-You can also specify `BUILD_SHARED_LIBS=ON` to build ImGui-SFML as a shared library. To build ImGui-SFML examples, set `IMGUI_SFML_BUILD_EXAMPLES=ON`. To build imgui-demo.cpp (to be able to use `ImGui::ShowDemoWindow`), set `IMGUI_SFML_IMGUI_DEMO=ON`.
-
-After the building, you can install the library on your system by running:
-```sh
-cmake --build . --target install
-```
-
-If you set `CMAKE_INSTALL_PREFIX` during configuration, you can install ImGui-SFML locally.
-
-Integrating into your project is simple.
 ```cmake
-find_package(ImGui-SFML REQUIRED)
-target_link_libraries(my_target PRIVATE ImGui-SFML::ImGui-SFML)
+target_link_libraries(game
+  PUBLIC
+    ImGui-SFML::ImGui-SFML
+)
 ```
-
-If CMake can't find ImGui-SFML on your system, just define `ImGui-SFML_DIR` before calling `find_package`.
 
 Integrating into your project manually
 ---
 - Download [ImGui](https://github.com/ocornut/imgui)
-- Add ImGui folder to your include directories
+- Add Dear ImGui folder to your include directories
 - Add `imgui.cpp`, `imgui_widgets.cpp`, `imgui_draw.cpp` and `imgui_tables.cpp` to your build/project
 - Copy the contents of `imconfig-SFML.h` to your `imconfig.h` file. (to be able to cast `ImVec2` to `sf::Vector2f` and vice versa)
 - Add a folder which contains `imgui-SFML.h` to your include directories
 - Add `imgui-SFML.cpp` to your build/project
 - Link OpenGL if you get linking errors
 
-Other ways to add to your project(won't recommend as the versions tend to lag behind and are not
+Other ways to add to your project
 ---
 Not recommended, as they're not maintained officially. Tend to lag behind and stay on older versions.
 
@@ -107,7 +93,7 @@ Using ImGui-SFML in your code
 Example code
 ----
 
-See example file [here](https://github.com/eliasdaler/imgui-sfml/blob/master/examples/minimal/main.cpp)
+See example file [here](https://github.com/SFML/imgui-sfml/blob/master/examples/minimal/main.cpp)
 
 ```cpp
 #include "imgui.h"
@@ -152,8 +138,6 @@ int main() {
     }
 
     ImGui::SFML::Shutdown();
-
-    return 0;
 }
 ```
 
@@ -245,7 +229,7 @@ sf::Sprite sprite(texture);
 ImGui::Image(sprite); // the texture is displayed properly
 ```
 
-For more notes see [this issue](https://github.com/eliasdaler/imgui-sfml/issues/35).
+For more notes see [this issue](https://github.com/SFML/imgui-sfml/issues/35).
 
 Mouse cursors
 ---
@@ -271,11 +255,11 @@ ImGuiIO& io = ImGui::GetIO();
 io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 ```
 
-Gamepad navigation requires more work, unless you have XInput gamepad, in which case the mapping is automatically set for you. But you can still set it up for your own gamepad easily, just take a look how it's done for the default mapping [here](https://github.com/eliasdaler/imgui-sfml/blob/navigation/imgui-SFML.cpp#L697). And then you need to do this:
+Gamepad navigation requires more work, unless you have XInput gamepad, in which case the mapping is automatically set for you. But you can still set it up for your own gamepad easily, just take a look how it's done for the default mapping [here](https://github.com/SFML/imgui-sfml/blob/navigation/imgui-SFML.cpp#L697). And then you need to do this:
 
 ```cpp
 ImGuiIO& io = ImGui::GetIO();
-io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 ```
 By default, the first active joystick is used for navigation, but you can set joystick id explicitly like this:
 ```cpp
@@ -285,9 +269,16 @@ ImGui::SFML::SetActiveJoystickId(5);
 High DPI screens
 ----
 
-As SFML is not currently DPI aware, your window/gui may show at the incorrect scale. This is particularly noticeable on Apple systems with Retina displays.
+As SFML is not currently DPI aware, your GUI may show at the incorrect scale. This is particularly noticeable on systems with "Retina" / "4K" / "UHD" displays.
 
-To fix this on macOS, you can create an app bundle (as opposed to just the exe) then modify the info.plist so that "High Resolution Capable" is set to "NO"
+To work around this on macOS, you can create an app bundle (as opposed to just the exe) then modify the info.plist so that "High Resolution Capable" is set to "NO".
+
+Another option to help ameliorate this, at least for getting started and for the common ImGui use-case of "developer/debug/building UI", is to explore `FontGlobalScale`:
+
+```cpp
+ImGuiIO& io = ImGui::GetIO();
+io.FontGlobalScale = 2.0; // or any other value hardcoded or loaded from your config logic
+```
 
 License
 ---
